@@ -32,6 +32,7 @@ class ImageDataset(Dataset):
         self.mode = image_ds_config.mode
         self.image_size = image_ds_config.image_size
         self.augment = image_ds_config.augment
+        self.augment_prob = image_ds_config.augment_prob
         self.rotation_degree = [0, 90, 180, 270]
 
         self.train_images = list(map(lambda x: f"{self.foreground_directory}train/{x}", os.listdir(f"{self.foreground_directory}/train")))
