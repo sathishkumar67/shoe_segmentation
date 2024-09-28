@@ -49,7 +49,6 @@ class ImageDataset(Dataset):
         else:
             img_path = self.test_images[index]
 
-        print(img_path)
         return self.transform_image(img_path, self.augment)
     
     def __len__(self):
