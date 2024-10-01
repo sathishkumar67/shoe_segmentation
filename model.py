@@ -1,10 +1,11 @@
+from __future__ import annotations
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 class UNet(nn.Module):
     
-    def __init__(self, n_channels, n_classes, bilinear):
+    def __init__(self, n_channels, n_classes, bilinear: bool = False):
         super(UNet, self).__init__()
         self.inc = inconv(n_channels, 64)
         self.down1 = down(64, 128)
