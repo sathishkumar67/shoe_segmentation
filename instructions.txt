@@ -1,4 +1,5 @@
-1. need to build training loop
-2. build pipeline for the model
-3. training the model
-4. hyperparameter tunning
+hyperparameter tunning
+training the model
+try using focal loss instead of binarycrossentropy loss
+try with incorporating with diff loss function
+read the theory behind using various loss function and how it works
