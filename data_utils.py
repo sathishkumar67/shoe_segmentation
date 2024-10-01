@@ -19,8 +19,6 @@ class ImageDatasetConfig:
     augment: bool = True
     augment_prob: float = 0.5
 
-img_ds_config = ImageDatasetConfig()
-
 
 class ImageDataset(Dataset):
     def __init__(self, image_ds_config: ImageDatasetConfig) -> None:
