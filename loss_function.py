@@ -1,3 +1,4 @@
+from __future__ import annotations
 import torch.nn as nn
 
 class BCELoss2d(nn.Module):
