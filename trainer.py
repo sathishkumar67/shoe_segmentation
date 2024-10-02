@@ -9,6 +9,7 @@ from data_utils import ImageDatasetConfig, ImageDataset
 from torch.utils.data import DataLoader
 from lightning.pytorch import Trainer
 from lightning.pytorch.callbacks import ModelCheckpoint
+import numpy as np
 
 
 def main(segmentation_config: SegmentationConfig):
@@ -44,6 +45,11 @@ def main(segmentation_config: SegmentationConfig):
 
     trainer = Trainer(max_epochs=segmentation_config.epochs, accelerator=segmentation_config.device, callbacks=[checkpoint_callback])
     trainer.fit(segmentation_wrapper, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
+
+    np.save("train_loss.npy", np.array(segmentation_wrapper.train_loss))
+    np.save("val_loss.npy", np.array(segmentation_wrapper.val_loss))
+
+
 
 
 if __name__ == "__main__":
