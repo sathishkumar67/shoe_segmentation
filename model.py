@@ -2,6 +2,15 @@ from __future__ import annotations
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from dataclasses import dataclass
+from model import UNet
+from loss_function import BCEwithDiceLoss, dice_loss
+from data_utils import ImageDatasetConfig, ImageDataset
+from torch.utils.data import DataLoader
+import lightning as L
+from lightning.pytorch import Trainer
+from schedulefree.adamw_schedulefree import AdamWScheduleFree
+
 
 class UNet(nn.Module):
     
@@ -99,3 +108,59 @@ class outconv(nn.Module):
     
     def forward(self, x):
         return self.conv(x)
+    
+
+
+
+@dataclass
+class SegmentationConfig:
+    n_channels: int
+    n_classes: int
+    alpha: int
+    beta: int 
+    smooth: float 
+    lr: float 
+    weight_decay: float 
+    betas: tuple
+    batch_size: int
+    epochs: int
+    device: str
+    seed: int
+
+
+class SegmentationWrapper(L.LightningModule):
+    def __init__(self, model, config: SegmentationConfig):
+        super().__init__()
+        self.model = model
+        self.config = config
+        self.loss_fn = BCEwithDiceLoss(alpha=config.alpha, beta=config.beta, smooth=config.smooth)
+        self.dice_loss = dice_loss
+        self.optimizer = self.configure_optimizers()
+
+    def training_step(self, batch, batch_idx):
+        self.model.train()
+        optimizer = self.optimizers()
+        optimizer.train()
+        optimizer.zero_grad()
+
+        img, mask = batch
+        output = self.model(img)
+        loss = self.loss_fn(output, mask)
+
+        self.log("train_loss", loss, prog_bar=True)
+
+        return loss
+    
+    def validation_step(self, batch, batch_idx):
+        self.model.eval()
+        optimizer = self.optimizers()
+        optimizer.eval()
+
+        img, mask = batch
+        output = self.model(img)
+        loss = self.loss_fn(output, mask)
+
+        self.log("val_loss", loss, prog_bar=True)
+    
+    def configure_optimizers(self):
+        return AdamWScheduleFree(self.model.parameters(), lr=self.config.lr, weight_decay=self.config.weight_decay)
