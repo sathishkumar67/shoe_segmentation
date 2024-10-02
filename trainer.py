@@ -40,12 +40,12 @@ if __name__ == "__main__":
         alpha=0.5,
         beta=0.5,
         smooth=0.5,
-        lr=0.001,
+        lr=3e-4,
         weight_decay=0.0001,
         betas=(0.9, 0.999),
         batch_size=8,
         epochs=1,
-        device="cpu",
+        device="cuda" if torch.cuda.is_available() else "cpu",
         seed=42
     )
 
