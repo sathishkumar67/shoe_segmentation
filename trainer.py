@@ -45,7 +45,7 @@ if __name__ == "__main__":
         betas=(0.9, 0.999),
         batch_size=8,
         epochs=1,
-        device="cuda" if torch.cuda.is_available() else "cpu",
+        device="cuda",
         seed=42
     )
 
