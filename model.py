@@ -132,6 +132,8 @@ class SegmentationWrapper(L.LightningModule):
         self.loss_fn = BCEwithDiceLoss(alpha=config.alpha, beta=config.beta, smooth=config.smooth)
         self.dice_loss = dice_loss
         self.optimizer = self.configure_optimizers()
+        self.train_loss = []
+        self.val_loss = []
 
     def training_step(self, batch, batch_idx):
         self.model.train()
@@ -142,6 +144,7 @@ class SegmentationWrapper(L.LightningModule):
         img, mask = batch
         output = self.model(img)
         loss = self.loss_fn(output, mask)
+        self.train_loss.append(loss.item())
 
         self.log("train_loss", loss, prog_bar=True)
 
@@ -155,8 +158,11 @@ class SegmentationWrapper(L.LightningModule):
         img, mask = batch
         output = self.model(img)
         loss = self.loss_fn(output, mask)
+        self.val_loss.append(loss.item())
 
         self.log("val_loss", loss, prog_bar=True)
+
+        return loss
     
     def configure_optimizers(self):
         return AdamWScheduleFree(self.model.parameters(), lr=self.config.lr, weight_decay=self.config.weight_decay)
