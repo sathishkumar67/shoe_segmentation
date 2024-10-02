@@ -8,6 +8,8 @@ from loss_function import BCEwithDiceLoss, dice_loss
 from data_utils import ImageDatasetConfig, ImageDataset
 from torch.utils.data import DataLoader
 from lightning.pytorch import Trainer
+from lightning.pytorch.callbacks import ModelCheckpoint
+
 
 def main(segmentation_config: SegmentationConfig):
     # set the seed
@@ -29,11 +31,41 @@ def main(segmentation_config: SegmentationConfig):
 
     model = UNet(n_channels=segmentation_config.n_channels, n_classes=segmentation_config.n_classes)
     segmentation_wrapper = SegmentationWrapper(model, segmentation_config)
-    trainer = Trainer(max_epochs=segmentation_config.epochs, accelerator=segmentation_config.device)
+
+    checkpoint_callback = ModelCheckpoint(
+        dirpath="checkpoints",
+        filename="{epoch:02d}",
+        save_top_k=-1,  
+        mode="min",
+        monitor="Val_Loss",
+        save_weights_only=True,
+        every_n_epochs=1
+    )
+
+    trainer = Trainer(max_epochs=segmentation_config.epochs, accelerator=segmentation_config.device, callbacks=[checkpoint_callback])
     trainer.fit(segmentation_wrapper, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
 
 
 if __name__ == "__main__":
+
+    # # create a grid search function to find the best hyperparameters
+    # def grid_search(segmentation_config: SegmentationConfig):
+    #     hyperparameters = {
+    #         "alpha": [0.2, 0.5, 0.8],
+    #         "beta": [0.2, 0.5, 0.8],
+    #         "smooth": [0.1, 0.5, 1.0],
+    #         "lr": [1e-4, 3e-4, 1e-3],
+    #         "weight_decay": [0.0001, 0.001, 0.01],
+    #         "betas": [(0.8, 0.99), (0.9, 0.999), (0.95, 0.9995)],
+    #         "batch_size": [4, 8, 16],
+    #     }
+    #     for hyperparameter_name, hyperparameter_values in hyperparameters.items():
+    #         for hyperparameter_value in hyperparameter_values:
+    #             new_seg_config = dataclasses.replace(segmentation_config, **{hyperparameter_name: hyperparameter_value})
+    #             main(new_seg_config)
+
+
+
     seg_config = SegmentationConfig(
         n_channels=3,
         n_classes=1,
@@ -44,7 +76,7 @@ if __name__ == "__main__":
         weight_decay=0.0001,
         betas=(0.9, 0.999),
         batch_size=8,
-        epochs=1,
+        epochs=5,
         device="cuda",
         seed=42
     )
