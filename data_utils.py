@@ -3,7 +3,7 @@ import os
 import random
 import numpy as np
 from PIL import Image
-import pydensecrf
+# import pydensecrf
 from dataclasses import dataclass
 import torchvision.transforms as T
 from torch.utils.data import Dataset
@@ -125,25 +125,25 @@ class ImageDataset(Dataset):
 
 
 
-def dense_crf(inputs, predict_probs):
-    h = predict_probs.shape[0]
-    w = predict_probs.shape[1]
+# def dense_crf(inputs, predict_probs):
+#     h = predict_probs.shape[0]
+#     w = predict_probs.shape[1]
     
-    predict_probs = np.expand_dims(predict_probs, 0)
-    predict_probs = np.append(1 - predict_probs, predict_probs, axis=0)
+#     predict_probs = np.expand_dims(predict_probs, 0)
+#     predict_probs = np.append(1 - predict_probs, predict_probs, axis=0)
     
-    d = pydensecrf.densecrf.DenseCRF2D(w, h, 2)
-    U = -np.log(predict_probs)
-    U = U.reshape((2, -1))
-    U = np.ascontiguousarray(U)
-    inputs = np.ascontiguousarray(inputs)
+#     d = pydensecrf.densecrf.DenseCRF2D(w, h, 2)
+#     U = -np.log(predict_probs)
+#     U = U.reshape((2, -1))
+#     U = np.ascontiguousarray(U)
+#     inputs = np.ascontiguousarray(inputs)
     
-    d.setUnaryEnergy(U)
+#     d.setUnaryEnergy(U)
     
-    d.addPairwiseGaussian(sxy=20, compat=3)
-    d.addPairwiseBilateral(sxy=30, srgb=20, rgbim=inputs, compat=10)
+#     d.addPairwiseGaussian(sxy=20, compat=3)
+#     d.addPairwiseBilateral(sxy=30, srgb=20, rgbim=inputs, compat=10)
     
-    Q = d.inference(5)
-    Q = np.argmax(np.array(Q), axis=0).reshape((h, w))
+#     Q = d.inference(5)
+#     Q = np.argmax(np.array(Q), axis=0).reshape((h, w))
     
-    return Q
+#     return Q
