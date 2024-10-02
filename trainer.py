@@ -37,7 +37,7 @@ def main(segmentation_config: SegmentationConfig):
         filename="{epoch:02d}",
         save_top_k=-1,  
         mode="min",
-        monitor="Val_Loss",
+        monitor="val_loss",
         save_weights_only=True,
         every_n_epochs=1
     )
