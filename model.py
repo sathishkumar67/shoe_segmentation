@@ -3,12 +3,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from dataclasses import dataclass
-from model import UNet
 from loss_function import BCEwithDiceLoss, dice_loss
-from data_utils import ImageDatasetConfig, ImageDataset
-from torch.utils.data import DataLoader
 import lightning as L
-from lightning.pytorch import Trainer
 from schedulefree.adamw_schedulefree import AdamWScheduleFree
 
 
