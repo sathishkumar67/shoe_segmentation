@@ -21,8 +21,8 @@ def main(segmentation_config: SegmentationConfig):
     train_dataloader = DataLoader(train_dataset, batch_size=segmentation_config.batch_size, shuffle=True)
 
     val_dataset_config = ImageDatasetConfig()
-    val_dataset = ImageDataset(image_ds_config=val_dataset_config)
     val_dataset_config.mode, val_dataset_config.augment = "val", False
+    val_dataset = ImageDataset(image_ds_config=val_dataset_config)
     val_dataloader = DataLoader(val_dataset, batch_size=segmentation_config.batch_size, shuffle=False)
 
     # test_dataset_config = ImageDatasetConfig()
