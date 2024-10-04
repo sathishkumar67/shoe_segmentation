@@ -25,10 +25,10 @@ def main(segmentation_config: SegmentationConfig):
     val_dataset = ImageDataset(image_ds_config=val_dataset_config)
     val_dataloader = DataLoader(val_dataset, batch_size=segmentation_config.batch_size, shuffle=False)
 
-    test_dataset_config = ImageDatasetConfig()
-    test_dataset_config.mode, test_dataset_config.augment = "test", False
-    test_dataset = ImageDataset(image_ds_config=test_dataset_config)
-    test_dataloader = DataLoader(test_dataset, batch_size=segmentation_config.batch_size, shuffle=False)
+    # test_dataset_config = ImageDatasetConfig()
+    # test_dataset_config.mode, test_dataset_config.augment = "test", False
+    # test_dataset = ImageDataset(image_ds_config=test_dataset_config)
+    # test_dataloader = DataLoader(test_dataset, batch_size=segmentation_config.batch_size, shuffle=False)
 
     model = UNet(n_channels=segmentation_config.n_channels, n_classes=segmentation_config.n_classes)
     segmentation_wrapper = SegmentationWrapper(model, segmentation_config)
@@ -98,4 +98,5 @@ if __name__ == "__main__":
         np.save("training_loss.npy", training_loss)
         np.save("validation_loss.npy", validation_loss)
         np.save("combinations.npy", combinations)
-        
+
+    random_search(random_combinations)
