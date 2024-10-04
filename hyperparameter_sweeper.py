@@ -82,7 +82,7 @@ if __name__ == "__main__":
                 lr=params["lr"].item(),
                 weight_decay=params["weight_decay"].item(),
                 betas=params["betas"],
-                batch_size=8,
+                batch_size=64,
                 epochs=params["epochs"],
                 device="cuda",
                 seed=42
