@@ -7,7 +7,7 @@ from model import *
 from data_utils import ImageDatasetConfig, ImageDataset
 from torch.utils.data import DataLoader
 from lightning.pytorch import Trainer
-from lightning.pytorch.callbacks import ModelCheckpoint
+# from lightning.pytorch.callbacks import ModelCheckpoint
 import numpy as np
 from sklearn.model_selection import ParameterSampler
 
@@ -25,30 +25,31 @@ def main(segmentation_config: SegmentationConfig):
     val_dataset = ImageDataset(image_ds_config=val_dataset_config)
     val_dataloader = DataLoader(val_dataset, batch_size=segmentation_config.batch_size, shuffle=False)
 
-    # test_dataset_config = ImageDatasetConfig()
-    # test_dataset = ImageDataset(image_ds_config=test_dataset_config)
-    # test_dataset_config.mode, test_dataset_config.augment = "test", False
-    # test_dataloader = DataLoader(test_dataset, batch_size=segmentation_config.batch_size, shuffle=False)
+    test_dataset_config = ImageDatasetConfig()
+    test_dataset_config.mode, test_dataset_config.augment = "test", False
+    test_dataset = ImageDataset(image_ds_config=test_dataset_config)
+    test_dataloader = DataLoader(test_dataset, batch_size=segmentation_config.batch_size, shuffle=False)
 
     model = UNet(n_channels=segmentation_config.n_channels, n_classes=segmentation_config.n_classes)
     segmentation_wrapper = SegmentationWrapper(model, segmentation_config)
 
-    checkpoint_callback = ModelCheckpoint(
-        dirpath="checkpoints",
-        filename="{epoch:02d}",
-        save_top_k=-1,  
-        mode="min",
-        monitor="val_loss",
-        save_weights_only=True,
-        every_n_epochs=1
-    )
+    # checkpoint_callback = ModelCheckpoint(
+    #     dirpath="checkpoints",
+    #     filename="{epoch:02d}",
+    #     save_top_k=-1,  
+    #     mode="min",
+    #     monitor="val_loss",
+    #     save_weights_only=True,
+    #     every_n_epochs=1
+    # )
 
-    trainer = Trainer(max_epochs=segmentation_config.epochs, accelerator=segmentation_config.device, callbacks=[checkpoint_callback])
+    trainer = Trainer(max_epochs=segmentation_config.epochs, accelerator=segmentation_config.device, devices=1)
     trainer.fit(segmentation_wrapper, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
 
-    np.save("train_loss.npy", np.array(segmentation_wrapper.train_loss))
-    np.save("val_loss.npy", np.array(segmentation_wrapper.val_loss))
+    train_loss = segmentation_wrapper.train_loss
+    val_loss = segmentation_wrapper.val_loss
 
+    return train_loss, val_loss
 
 
 
@@ -67,8 +68,11 @@ if __name__ == "__main__":
     random_combinations = list(ParameterSampler(hyperparameters, n_iter=20, random_state=42))
 
     # Random search for find best hyperparameters
-    def random_search(hyperparameters, total_combinations=20, random_state=42):
-        for params in random_combinations:
+    def random_search(hyperparameters):
+        training_loss = []
+        validation_loss = []
+        combinations = []
+        for params in hyperparameters:
             seg_config = SegmentationConfig(
                 n_channels=3,
                 n_classes=1,
@@ -84,4 +88,14 @@ if __name__ == "__main__":
                 seed=42
             )
 
-    # main(seg_config)
+            torch.manual_seed(seg_config.seed)
+            train_loss, val_loss = main(seg_config)
+
+            training_loss.append(train_loss)
+            validation_loss.append(val_loss)
+            combinations.append(params)
+
+        np.save("training_loss.npy", training_loss)
+        np.save("validation_loss.npy", validation_loss)
+        np.save("combinations.npy", combinations)
+        
