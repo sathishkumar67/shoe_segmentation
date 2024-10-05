@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
     # Generate 5 random hyperparameter combinations
     random_combinations = list(ParameterSampler(hyperparameters, n_iter=5, random_state=1337))
-    print(random_combinations)
+
     # Random search for find best hyperparameters
     def random_search(hyperparameters):
         training_loss = []
@@ -78,8 +78,8 @@ if __name__ == "__main__":
                 alpha=params["alpha_beta"][0],
                 beta=params["alpha_beta"][1],
                 smooth=0.5,
-                lr=params["lr"].item(),
-                weight_decay=params["weight_decay"].item(),
+                lr=params["lr"],
+                weight_decay=params["weight_decay"],
                 betas=params["betas"],
                 batch_size=16,
                 epochs=params["epochs"],
