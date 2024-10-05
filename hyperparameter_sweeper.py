@@ -64,8 +64,8 @@ if __name__ == "__main__":
     }
 
     # Generate 20 random hyperparameter combinations
-    random_combinations = list(ParameterSampler(hyperparameters, n_iter=10, random_state=1337))
-
+    random_combinations = list(ParameterSampler(hyperparameters, n_iter=5, random_state=1337))
+    print(random_combinations)
     # Random search for find best hyperparameters
     def random_search(hyperparameters):
         training_loss = []
