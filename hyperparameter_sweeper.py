@@ -63,7 +63,7 @@ if __name__ == "__main__":
         "epochs": [5, 10, 15]  # epochs
     }
 
-    # Generate 20 random hyperparameter combinations
+    # Generate 5 random hyperparameter combinations
     random_combinations = list(ParameterSampler(hyperparameters, n_iter=5, random_state=1337))
     print(random_combinations)
     # Random search for find best hyperparameters
