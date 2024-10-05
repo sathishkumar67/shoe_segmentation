@@ -1,5 +1,2 @@
-hyperparameter tunning
 training the model
 try using focal loss instead of binarycrossentropy loss
-try with incorporating with diff loss function
-read the theory behind using various loss function and how it works
