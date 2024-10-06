@@ -117,11 +117,11 @@ class SegmentationConfig:
     smooth: float 
     lr: float 
     weight_decay: float 
-    betas: tuple
     batch_size: int
     epochs: int
     device: str
     seed: int
+    betas: tuple = (0.9, 0.999)
 
 
 class SegmentationWrapper(L.LightningModule):

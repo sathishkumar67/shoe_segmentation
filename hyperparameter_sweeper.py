@@ -83,7 +83,8 @@ if __name__ == "__main__":
                 batch_size=16,
                 epochs=params["epochs"],
                 device="cuda",
-                seed=42
+                seed=42,
+                betas=(0.9, 0.999)
             )
 
             torch.manual_seed(seg_config.seed)
