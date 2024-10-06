@@ -70,7 +70,6 @@ if __name__ == "__main__":
     def random_search(hyperparameters):
         training_loss = []
         validation_loss = []
-        combinations = []
         for params in hyperparameters:
             seg_config = SegmentationConfig(
                 n_channels=3,
@@ -92,10 +91,8 @@ if __name__ == "__main__":
 
             training_loss.append(train_loss)
             validation_loss.append(val_loss)
-            combinations.append(params)
 
-        np.save("training_loss.npy", training_loss)
-        np.save("validation_loss.npy", validation_loss)
-        np.save("combinations.npy", combinations)
+        np.save("training_loss.npy", np.array(training_loss))
+        np.save("validation_loss.npy", np.array(validation_loss))
 
     random_search(random_combinations)
