@@ -80,7 +80,6 @@ if __name__ == "__main__":
                 smooth=0.5,
                 lr=params["lr"],
                 weight_decay=params["weight_decay"],
-                betas=params["betas"],
                 batch_size=16,
                 epochs=params["epochs"],
                 device="cuda",
