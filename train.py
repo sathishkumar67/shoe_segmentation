@@ -13,9 +13,7 @@ from sklearn.model_selection import ParameterSampler
 
 
 def main(segmentation_config: SegmentationConfig):
-    # set the seed
-    torch.manual_seed(segmentation_config.seed)
-
+    
     train_dataset_config = ImageDatasetConfig()
     train_dataset = ImageDataset(image_ds_config=train_dataset_config)
     train_dataloader = DataLoader(train_dataset, batch_size=segmentation_config.batch_size, shuffle=True)
