@@ -10,10 +10,12 @@ from lightning.pytorch import Trainer
 # from lightning.pytorch.callbacks import ModelCheckpoint
 import numpy as np
 from sklearn.model_selection import ParameterSampler
+import json
+
 
 
 def main(segmentation_config: SegmentationConfig):
-    
+
     train_dataset_config = ImageDatasetConfig()
     train_dataset = ImageDataset(image_ds_config=train_dataset_config)
     train_dataloader = DataLoader(train_dataset, batch_size=segmentation_config.batch_size, shuffle=True)
@@ -93,3 +95,7 @@ if __name__ == "__main__":
     # save the training and validation loss
     np.save("training_loss.npy", np.array(train_loss))
     np.save("validation_loss.npy", np.array(val_loss))
+
+    # save the parameters dict
+    with open('params1.json', 'w') as fp:
+        json.dump(params, fp)
