@@ -1,2 +1,3 @@
-training the model
-try using focal loss instead of binarycrossentropy loss
+1. training the model with diff hyperparameters
+2. try using focal loss instead of binarycrossentropy loss
+3. evaluate diff val_loss for diff hyperparameters to find optimal hyperparameters
