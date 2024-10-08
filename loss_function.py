@@ -8,16 +8,13 @@ class BCELoss2d(nn.Module):
         self.bce_loss = nn.BCELoss()
     
     def forward(self, predict, target):
-        predict = predict.view(-1)
-        target = target.view(-1)
-        return self.bce_loss(predict, target)
+        return self.bce_loss(predict.view(-1), target.view(-1))
 
 def dice_coeff(predict, target):
     smooth = 0.001
-    batch_size = predict.size(0)
     predict = (predict > 0.5).float()
-    m1 = predict.view(batch_size, -1)
-    m2 = target.view(batch_size, -1)
+    m1 = predict.view(predict.size(0), -1)
+    m2 = target.view(target.size(0), -1)
     intersection = (m1 * m2).sum(-1)
     return ((2.0 * intersection + smooth) / (m1.sum(-1) + m2.sum(-1) + smooth)).mean()
 
@@ -25,10 +22,9 @@ def dice_coeff(predict, target):
 # dice loss = 1 - dice_coeff
 def dice_loss(predict, target):
     smooth = 0.001
-    batch_size = predict.size(0)
     predict = (predict > 0.5).float()
-    m1 = predict.view(batch_size, -1)
-    m2 = target.view(batch_size, -1)
+    m1 = predict.view(predict.size(0), -1)
+    m2 = target.view(target.size(0), -1)
     intersection = (m1 * m2).sum(-1)
     return 1 - ((2.0 * intersection + smooth) / (m1.sum(-1) + m2.sum(-1) + smooth)).mean()
 
@@ -47,10 +43,9 @@ class BCEwithDiceLoss(nn.Module):
         bce_loss = self.bce_loss(predict.view(-1), target.view(-1))
         
         # calculate dice loss
-        batch_size = predict.size(0)
         predict = (predict > 0.5).float()
-        m1 = predict.view(batch_size, -1)
-        m2 = target.view(batch_size, -1)
+        m1 = predict.view(predict.size(0), -1)
+        m2 = target.view(target.size(0), -1)
         intersection = (m1 * m2).sum(-1)
         dice_loss =  1 - ((2.0 * intersection + self.smooth) / (m1.sum(-1) + m2.sum(-1) + self.smooth)).mean()
         
