@@ -67,7 +67,7 @@ if __name__ == "__main__":
     random_combinations = list(ParameterSampler(hyperparameters, n_iter=5, random_state=1337))
 
     # sample from the random hyperparameter combinations
-    params = random_combinations[0]  
+    params = random_combinations[1]  
 
     # set the hyperparameters
     seg_config = SegmentationConfig(
@@ -97,5 +97,5 @@ if __name__ == "__main__":
     np.save("validation_loss.npy", np.array(val_loss))
 
     # save the parameters dict
-    with open('params1.json', 'w') as fp:
+    with open('params.json', 'w') as fp:
         json.dump(params, fp)
