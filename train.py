@@ -67,7 +67,7 @@ if __name__ == "__main__":
     random_combinations = list(ParameterSampler(hyperparameters, n_iter=5, random_state=1337))
 
     # sample from the random hyperparameter combinations
-    params = random_combinations[1]  
+    params = random_combinations[2]  
 
     # set the hyperparameters
     seg_config = SegmentationConfig(
