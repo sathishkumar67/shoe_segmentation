@@ -1,0 +1,1 @@
+{"weight_decay": 0.0001, "lr": 0.001, "epochs": 5, "alpha_beta": [0.5, 0.5]}
