@@ -56,30 +56,45 @@ def main(segmentation_config: SegmentationConfig):
 if __name__ == "__main__":
 
     # Your hyperparameters
-    hyperparameters = {
-        "alpha_beta": [(0.4, 0.6), (0.5, 0.5), (0.6, 0.4)],  # alpha and beta for the loss function
-        "lr": [1e-3, 1e-4, 1e-5],  # learning rate
-        "weight_decay": [1e-3, 1e-4, 1e-5],  # weight decay
-        "epochs": [5, 10, 15]  # epochs
-    }
+    # hyperparameters = {
+    #     "alpha_beta": [(0.4, 0.6), (0.5, 0.5), (0.6, 0.4)],  # alpha and beta for the loss function
+    #     "lr": [1e-3, 1e-4, 1e-5],  # learning rate
+    #     "weight_decay": [1e-3, 1e-4, 1e-5],  # weight decay
+    #     "epochs": [5, 10, 15]  # epochs
+    # }
 
     # Generate 5 random hyperparameter combinations
-    random_combinations = list(ParameterSampler(hyperparameters, n_iter=5, random_state=1337))
+    # random_combinations = list(ParameterSampler(hyperparameters, n_iter=5, random_state=1337))
 
     # sample from the random hyperparameter combinations
-    params = random_combinations[4]  
+    # params = random_combinations[4]  
 
-    # set the hyperparameters
+    # # set the hyperparameters
+    # seg_config = SegmentationConfig(
+    #             n_channels=3,
+    #             n_classes=1,
+    #             alpha=params["alpha_beta"][0],
+    #             beta=params["alpha_beta"][1],
+    #             smooth=0.5,
+    #             lr=params["lr"],
+    #             weight_decay=params["weight_decay"],
+    #             batch_size=16,
+    #             epochs=params["epochs"],
+    #             device="cuda",
+    #             seed=42,
+    #             betas=(0.9, 0.999)
+    #         )
+
     seg_config = SegmentationConfig(
                 n_channels=3,
                 n_classes=1,
-                alpha=params["alpha_beta"][0],
-                beta=params["alpha_beta"][1],
+                alpha=0.5,
+                beta=0.5,
                 smooth=0.5,
-                lr=params["lr"],
-                weight_decay=params["weight_decay"],
+                lr=3e-4,
+                weight_decay=0.01,
                 batch_size=16,
-                epochs=params["epochs"],
+                epochs=15,
                 device="cuda",
                 seed=42,
                 betas=(0.9, 0.999)
@@ -97,5 +112,5 @@ if __name__ == "__main__":
     np.save("validation_loss.npy", np.array(val_loss))
 
     # save the parameters dict
-    with open('params.json', 'w') as fp:
-        json.dump(params, fp)
+    # with open('params.json', 'w') as fp:
+    #     json.dump(params, fp)
