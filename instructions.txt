@@ -1,3 +1,6 @@
 1. training the model with diff hyperparameters
 2. try using focal loss instead of binarycrossentropy loss
 3. evaluate diff val_loss for diff hyperparameters to find optimal hyperparameters
+4. try using gradient clip
+
+# applied weight initialization
