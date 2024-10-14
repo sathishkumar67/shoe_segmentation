@@ -138,7 +138,7 @@ class SegmentationWrapper(L.LightningModule):
     def training_step(self, batch, batch_idx):
         self.model.train()
         optimizer = self.optimizers()
-        optimizer.train()
+        # optimizer.train()
         optimizer.zero_grad()
 
         img, mask = batch
@@ -153,7 +153,7 @@ class SegmentationWrapper(L.LightningModule):
     def validation_step(self, batch, batch_idx):
         self.model.eval()
         optimizer = self.optimizers()
-        optimizer.eval()
+        # optimizer.eval()
 
         img, mask = batch
         output = self.model(img)
