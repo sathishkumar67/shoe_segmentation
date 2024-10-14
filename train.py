@@ -1,15 +1,12 @@
 
 from __future__ import annotations
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
 from model import *
 from data_utils import ImageDatasetConfig, ImageDataset
 from torch.utils.data import DataLoader
 from lightning.pytorch import Trainer
 # from lightning.pytorch.callbacks import ModelCheckpoint
 import numpy as np
-from sklearn.model_selection import ParameterSampler
 import json
 
 
@@ -31,6 +28,7 @@ def main(segmentation_config: SegmentationConfig):
     # test_dataloader = DataLoader(test_dataset, batch_size=segmentation_config.batch_size, shuffle=False)
 
     model = UNet(n_channels=segmentation_config.n_channels, n_classes=segmentation_config.n_classes)
+    model.apply(init_weights)
     segmentation_wrapper = SegmentationWrapper(model, segmentation_config)
 
     # checkpoint_callback = ModelCheckpoint(
@@ -54,37 +52,6 @@ def main(segmentation_config: SegmentationConfig):
 
 
 if __name__ == "__main__":
-
-    # Your hyperparameters
-    # hyperparameters = {
-    #     "alpha_beta": [(0.4, 0.6), (0.5, 0.5), (0.6, 0.4)],  # alpha and beta for the loss function
-    #     "lr": [1e-3, 1e-4, 1e-5],  # learning rate
-    #     "weight_decay": [1e-3, 1e-4, 1e-5],  # weight decay
-    #     "epochs": [5, 10, 15]  # epochs
-    # }
-
-    # Generate 5 random hyperparameter combinations
-    # random_combinations = list(ParameterSampler(hyperparameters, n_iter=5, random_state=1337))
-
-    # sample from the random hyperparameter combinations
-    # params = random_combinations[4]  
-
-    # # set the hyperparameters
-    # seg_config = SegmentationConfig(
-    #             n_channels=3,
-    #             n_classes=1,
-    #             alpha=params["alpha_beta"][0],
-    #             beta=params["alpha_beta"][1],
-    #             smooth=0.5,
-    #             lr=params["lr"],
-    #             weight_decay=params["weight_decay"],
-    #             batch_size=16,
-    #             epochs=params["epochs"],
-    #             device="cuda",
-    #             seed=42,
-    #             betas=(0.9, 0.999)
-    #         )
-
     seg_config = SegmentationConfig(
                 n_channels=3,
                 n_classes=1,
