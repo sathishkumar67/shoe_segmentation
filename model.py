@@ -2,10 +2,10 @@ from __future__ import annotations
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.nn.init as init
 from dataclasses import dataclass
 from loss_function import BCEwithDiceLoss, dice_loss
 import lightning as L
-from schedulefree.adamw_schedulefree import AdamWScheduleFree
 
 
 class UNet(nn.Module):
@@ -106,6 +106,16 @@ class outconv(nn.Module):
         return self.conv(x)
     
 
+# weight initialization for the model
+def init_weights(m):
+    if isinstance(m, nn.Conv2d) or isinstance(m, nn.ConvTranspose2d):
+        init.xavier_normal_(m.weight)  # Xavier initialization
+        if m.bias is not None:
+            init.zeros_(m.bias)  # Initialize biases to 0
+    elif isinstance(m, nn.BatchNorm2d):
+        init.ones_(m.weight)  # Initialize BN weights to 1
+        init.zeros_(m.bias)   # Initialize BN biases to 0
+
 
 
 @dataclass
@@ -138,7 +148,6 @@ class SegmentationWrapper(L.LightningModule):
     def training_step(self, batch, batch_idx):
         self.model.train()
         optimizer = self.optimizers()
-        # optimizer.train()
         optimizer.zero_grad()
 
         img, mask = batch
@@ -153,7 +162,6 @@ class SegmentationWrapper(L.LightningModule):
     def validation_step(self, batch, batch_idx):
         self.model.eval()
         optimizer = self.optimizers()
-        # optimizer.eval()
 
         img, mask = batch
         output = self.model(img)
@@ -165,5 +173,4 @@ class SegmentationWrapper(L.LightningModule):
         return loss
     
     def configure_optimizers(self):
-        # return AdamWScheduleFree(self.model.parameters(), lr=self.config.lr, weight_decay=self.config.weight_decay)
         return torch.optim.AdamW(self.model.parameters(), lr=self.config.lr, weight_decay=self.config.weight_decay)
