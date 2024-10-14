@@ -165,4 +165,5 @@ class SegmentationWrapper(L.LightningModule):
         return loss
     
     def configure_optimizers(self):
-        return AdamWScheduleFree(self.model.parameters(), lr=self.config.lr, weight_decay=self.config.weight_decay)
+        # return AdamWScheduleFree(self.model.parameters(), lr=self.config.lr, weight_decay=self.config.weight_decay)
+        return torch.optim.AdamW(self.model.parameters(), lr=self.config.lr, weight_decay=self.config.weight_decay)
