@@ -131,7 +131,7 @@ class SegmentationConfig:
     epochs: int
     device: str
     seed: int
-    betas: tuple = (0.9, 0.999)
+    betas: tuple 
 
 
 class SegmentationWrapper(L.LightningModule):
@@ -142,8 +142,6 @@ class SegmentationWrapper(L.LightningModule):
         self.loss_fn = BCEwithDiceLoss(alpha=config.alpha, beta=config.beta, smooth=config.smooth)
         self.dice_loss = dice_loss
         self.optimizer = self.configure_optimizers()
-        self.train_loss = []
-        self.val_loss = []
 
     def training_step(self, batch, batch_idx):
         self.model.train()
@@ -155,7 +153,7 @@ class SegmentationWrapper(L.LightningModule):
         loss = self.loss_fn(output, mask)
         self.train_loss.append(loss.item())
 
-        self.log("train_loss", loss, prog_bar=True)
+        self.log("train_loss", loss, prog_bar=True, on_step=True, logger=True)
 
         return loss
     
@@ -168,7 +166,7 @@ class SegmentationWrapper(L.LightningModule):
         loss = self.loss_fn(output, mask)
         self.val_loss.append(loss.item())
 
-        self.log("val_loss", loss, prog_bar=True)
+        self.log("val_loss", loss, prog_bar=True, on_step=True, logger=True)
 
         return loss
     
