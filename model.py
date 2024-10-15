@@ -151,7 +151,6 @@ class SegmentationWrapper(L.LightningModule):
         img, mask = batch
         output = self.model(img)
         loss = self.loss_fn(output, mask)
-        self.train_loss.append(loss.item())
 
         self.log("train_loss", loss, prog_bar=True, on_step=True, logger=True)
 
@@ -164,7 +163,6 @@ class SegmentationWrapper(L.LightningModule):
         img, mask = batch
         output = self.model(img)
         loss = self.loss_fn(output, mask)
-        self.val_loss.append(loss.item())
 
         self.log("val_loss", loss, prog_bar=True, on_step=True, logger=True)
 
