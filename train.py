@@ -4,10 +4,9 @@ from model import *
 from data_utils import ImageDatasetConfig, ImageDataset
 from torch.utils.data import DataLoader
 from lightning.pytorch import Trainer, seed_everything
-from lightning.pytorch.loggers import CSVLogger
 from lightning.pytorch.callbacks import ModelCheckpoint
 import json
-
+import numpy as np
 
 
 def main(segmentation_config: SegmentationConfig):
@@ -43,11 +42,16 @@ def main(segmentation_config: SegmentationConfig):
         save_weights_only=True,
         every_n_epochs=1
     )
-    logger = CSVLogger("logs", name="training_logs")
 
-    trainer = Trainer(max_epochs=segmentation_config.epochs, accelerator=segmentation_config.device, devices=1, callbacks=[checkpoint_callback], deterministic=True, logger=logger)
+    trainer = Trainer(max_epochs=segmentation_config.epochs, accelerator=segmentation_config.device, devices=1, callbacks=[checkpoint_callback], deterministic=True)
     trainer.fit(segmentation_wrapper, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
     trainer.validate(segmentation_wrapper, dataloaders=val_dataloader)
+
+    train_loss = segmentation_wrapper.train_loss
+    val_loss = segmentation_wrapper.val_loss
+
+    np.save("logs/training_loss.npy", np.array(train_loss))
+    np.save("logs/validation_loss.npy", np.array(val_loss))
 
 
 
@@ -56,13 +60,13 @@ if __name__ == "__main__":
     args = SegmentationConfig(
         n_channels=3,
         n_classes=1,
-        alpha=0.5,
-        beta=0.5,
+        alpha=0.4,
+        beta=0.6,
         smooth=0.5,
-        lr=3e-4,
+        lr=3e-5,
         weight_decay=0.01,
         batch_size=16,
-        epochs=15,
+        epochs=20,
         device="cuda",
         seed=42,
         betas=(0.9, 0.999)
