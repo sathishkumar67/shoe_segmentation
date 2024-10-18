@@ -50,8 +50,8 @@ def main(segmentation_config: SegmentationConfig):
     train_loss = segmentation_wrapper.train_loss
     val_loss = segmentation_wrapper.val_loss
 
-    np.save("logs/training_loss.npy", np.array(train_loss))
-    np.save("logs/validation_loss.npy", np.array(val_loss))
+    np.save("training_loss.npy", np.array(train_loss))
+    np.save("validation_loss.npy", np.array(val_loss))
 
 
 
